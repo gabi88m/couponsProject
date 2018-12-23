@@ -16,7 +16,7 @@ public abstract class AbsFacade {
 	protected static AbsFacade login(String name, String password, LoginType type) throws InvalidLoginException {
 		switch (type) {
 			case ADMIN:
-				return AdminFacade.performLogin(name, password);
+				// return AdminFacade.performLogin(name, password);
 			case COMPANY:
 
 				break;
@@ -27,5 +27,6 @@ public abstract class AbsFacade {
 				break;
 
 		}
+		return null;
 	}
 }
