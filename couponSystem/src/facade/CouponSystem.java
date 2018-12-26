@@ -22,9 +22,9 @@ public class CouponSystem {
 		return instance;
 	}// getInstance
 
-	public AbsFacade login(String name, String password, LoginType type)
+	public CouponClientFacade login(String name, String password, LoginType type)
 			throws InvalidLoginException, CouponSystemException {
-		return AbsFacade.login(name, password, type);
+		return CouponClientFacade.login(name, password, type);
 	}// login
 
 	protected void start() {

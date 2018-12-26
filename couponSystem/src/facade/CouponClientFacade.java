@@ -1,5 +1,22 @@
-package Facade;
+package facade;
+
+import ex.CouponSystemException;
+import ex.InvalidLoginException;
 
 public interface CouponClientFacade {
-	public CouponClientFacade login(String name, String password, String clientType);
+
+	public static CouponClientFacade login(String name, String password, LoginType clientType)
+			throws InvalidLoginException, CouponSystemException {
+		switch (clientType) {
+			case ADMIN:
+				return AdminFacade.login(name, password);
+			case COMPANY:
+				return CompanyFacade.login(name, password);
+			case CUSTOMER:
+				return CustomerFacade.login(name, password);
+			default:
+				throw new InvalidLoginException("What are you? :-0");
+		}
+	}
+
 }

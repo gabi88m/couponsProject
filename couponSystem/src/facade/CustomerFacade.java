@@ -5,11 +5,12 @@ import java.util.Iterator;
 
 import dbdao.CustomerDBDAO;
 import ex.CouponSystemException;
+import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
 import javaBeans.Coupon;
 import javaBeans.Customer;
 
-public class CustomerFacade extends AbsFacade {
+public class CustomerFacade implements CouponClientFacade {
 	private CustomerDBDAO customerDAO = new CustomerDBDAO();
 
 	public CustomerFacade() {
@@ -61,9 +62,11 @@ public class CustomerFacade extends AbsFacade {
 		return myCoupons;
 	}// getAllPurchasedCouponsByPrice
 
-	public static AbsFacade login(String name, String password) {
-		// TODO Auto-generated method stub
-		return null;
+	public static CouponClientFacade login(String name, String password)
+			throws CouponSystemException, InvalidLoginException {
+		CustomerDBDAO customerDBDAO = new CustomerDBDAO();
+		Customer customer = customerDBDAO.login(name, password);
+		return new CustomerFacade();
 	}
 
 }

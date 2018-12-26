@@ -196,6 +196,10 @@ public final class Schema {
 		return "select * from " + TABLE_NAME_COUPON + " where " + ID + " =?;";
 	}// getSelectCouponById
 
+	public static String getSelectCouponByType() {
+		return "select * from " + TABLE_NAME_COUPON + " where " + COUPON_TYPE + " =?;";
+	}// getSelectCouponByType
+
 	public static String getSelectAllCoupons() {
 		return "select * from " + TABLE_NAME_COUPON + ";";
 	}// getSelectCouponById
@@ -257,6 +261,14 @@ public final class Schema {
 	public static String getDeleteFromCustomerCouponInnerJoinById() {
 		return "delete from " + TABLE_NAME_CUSTOMER_COUPON + " where " + CUSTOMER_JOIN_ID + " =?;";
 	}// getDeleteFromCustomerCouponInnerJoinById
+
+	public static String getSelectAllFromCustomerCoupon() {
+		return "select * from " + TABLE_NAME_CUSTOMER_COUPON;
+	}// getSelectAllFromCustomerCoupon
+
+	public static String getSelectFromCompanyCouponById() {
+		return "select * from " + TABLE_NAME_COMPANY_COUPON + " where " + COMP_JOIN_ID + " =?;";
+	}// getSelectFromCompanyCouponById
 
 	public static String getCustomerJoinId() {
 		return CUSTOMER_JOIN_ID;

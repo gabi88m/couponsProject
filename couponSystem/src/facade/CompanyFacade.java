@@ -7,11 +7,12 @@ import java.util.Collection;
 import dbdao.CompanyDBDAO;
 import dbdao.CouponDBDAO;
 import ex.CouponSystemException;
+import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
 import javaBeans.Company;
 import javaBeans.Coupon;
 
-public class CompanyFacade extends AbsFacade {
+public class CompanyFacade implements CouponClientFacade {
 	CouponDBDAO couponDBDAO = new CouponDBDAO();
 	CompanyDBDAO companyDBDAO = new CompanyDBDAO();
 
@@ -74,9 +75,11 @@ public class CompanyFacade extends AbsFacade {
 		return couponDBDAO.getCouponByType(type);
 	}// getCouponByType
 
-	public static AbsFacade login(String name, String password) {
-		// TODO Auto-generated method stub
-		return null;
+	public static CouponClientFacade login(String name, String password)
+			throws CouponSystemException, InvalidLoginException {
+		CompanyDBDAO companyDBDAO = new CompanyDBDAO();
+		Company company = companyDBDAO.login(name, password);
+		return new CompanyFacade();
 	}// login
 
 }

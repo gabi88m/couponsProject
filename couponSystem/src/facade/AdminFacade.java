@@ -13,13 +13,15 @@ import javaBeans.Company;
 import javaBeans.Coupon;
 import javaBeans.Customer;
 
-public class AdminFacade extends AbsFacade {
-	CompanyDBDAO companyDBDAO = new CompanyDBDAO();
-	CustomerDBDAO customerDBDAO = new CustomerDBDAO();
-	CouponDBDAO couponDBDAO = new CouponDBDAO();
+public class AdminFacade implements CouponClientFacade {
+	CompanyDBDAO companyDBDAO;
+	CustomerDBDAO customerDBDAO;
+	CouponDBDAO couponDBDAO;
 
 	public AdminFacade() {
-		// TODO Auto-generated constructor stub
+		companyDBDAO = new CompanyDBDAO();
+		customerDBDAO = new CustomerDBDAO();
+		couponDBDAO = new CouponDBDAO();
 	}// ctor
 
 	public void createCompany(Company company) throws CouponSystemException, NoSuchObjectException {
@@ -103,11 +105,11 @@ public class AdminFacade extends AbsFacade {
 		return customerDBDAO.getAllCustomers();
 	}// getAllCustomers
 
-	public static AbsFacade login(String name, String password) throws InvalidLoginException {
-		if ("admin".equals(name) && "1234".equals(password))
+	public static CouponClientFacade login(String name, String password) throws InvalidLoginException {
+		if ("admin".equals(name) && "1234".equals(password)) {// admin can be only this user
 			return new AdminFacade();
+		}
 		throw new InvalidLoginException("Can not login as admin the provided credentials!");
-
 	}// login
 
 }

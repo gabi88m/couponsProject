@@ -59,13 +59,14 @@ public class Test {
 		 * Facades
 		 */
 		AdminFacade adminFacade = (AdminFacade) CouponSystem.getInstance().login("admin", "1234", LoginType.ADMIN);
-		CustomerFacade customerFacade = (CustomerFacade) CouponSystem.getInstance().login(name, password, type);
-		CompanyFacade companyFacade = new CompanyFacade();
+		CompanyFacade companyFacade = (CompanyFacade) CouponSystem.getInstance().login("compname1", "123456",
+				LoginType.COMPANY);
+		CustomerFacade customerFacade = (CustomerFacade) CouponSystem.getInstance().login("customer1", "123456",
+				LoginType.CUSTOMER);
 
 		/*****************************************************************************************************************
 		 * All Tests
 		 */
-		System.out.println(adminFacade.getAllCompanies());
 //		adminFacade.createCompany(company1);
 //		adminFacade.createCustomer(customer1);
 //		System.out.println(adminFacade.getAllCompanies());

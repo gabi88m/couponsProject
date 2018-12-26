@@ -137,7 +137,7 @@ public class CouponDBDAO implements CouponDAO {
 		// TODO:NoSuchObjectExeption(type)////////////
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
-			st = c1.prepareStatement("select * from coupon where TYPE=?");
+			st = c1.prepareStatement(Schema.getSelectCouponByType());
 			st.setString(1, type.toString());
 			res = st.executeQuery();
 			while (res.next()) {
@@ -203,7 +203,7 @@ public class CouponDBDAO implements CouponDAO {
 		// TODO:NoSuchObjectExeption(type)////////////
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
-			st = c1.prepareStatement("select * from customer_coupon");
+			st = c1.prepareStatement(Schema.getSelectAllFromCustomerCoupon());
 			res = st.executeQuery();
 			while (res.next()) {
 				myCouponsIds.add(res.getLong(Schema.getCompJoinId()));
@@ -225,7 +225,7 @@ public class CouponDBDAO implements CouponDAO {
 		// TODO:NoSuchObjectExeption(type)////////////
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
-			st = c1.prepareStatement("select * from company_coupon where comp_id=?");
+			st = c1.prepareStatement(Schema.getSelectFromCompanyCouponById());
 			st.setLong(1, company.getId());
 			res = st.executeQuery();
 			while (res.next()) {
