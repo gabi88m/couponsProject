@@ -1,4 +1,4 @@
-package Facade;
+package facade;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,7 +9,7 @@ import ex.NoSuchObjectException;
 import javaBeans.Coupon;
 import javaBeans.Customer;
 
-public class CustomerFacade implements CouponClientFacade {
+public class CustomerFacade extends AbsFacade {
 	private CustomerDBDAO customerDAO = new CustomerDBDAO();
 
 	public CustomerFacade() {
@@ -61,8 +61,7 @@ public class CustomerFacade implements CouponClientFacade {
 		return myCoupons;
 	}// getAllPurchasedCouponsByPrice
 
-	@Override
-	public CouponClientFacade login(String name, String password, String clientType) {
+	public static AbsFacade login(String name, String password) {
 		// TODO Auto-generated method stub
 		return null;
 	}

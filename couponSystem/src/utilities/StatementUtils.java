@@ -1,4 +1,4 @@
-package couponSystem;
+package utilities;
 
 import java.sql.SQLException;
 import java.sql.Statement;

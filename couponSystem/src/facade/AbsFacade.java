@@ -1,5 +1,6 @@
-package Facade;
+package facade;
 
+import ex.CouponSystemException;
 import ex.InvalidLoginException;
 
 public abstract class AbsFacade {
@@ -13,20 +14,17 @@ public abstract class AbsFacade {
 	 * @return A matching facade for the login type.
 	 * @throws InvalidLoginException
 	 */
-	protected static AbsFacade login(String name, String password, LoginType type) throws InvalidLoginException {
+	protected static AbsFacade login(String name, String password, LoginType type)
+			throws InvalidLoginException, CouponSystemException {
 		switch (type) {
 			case ADMIN:
-				// return AdminFacade.performLogin(name, password);
+				return AdminFacade.login(name, password);
 			case COMPANY:
-
-				break;
+				return CompanyFacade.login(name, password);
 			case CUSTOMER:
-
-				break;
+				return CustomerFacade.login(name, password);
 			default:
-				break;
-
+				throw new InvalidLoginException("There is no sutch user!!!!!!");
 		}
-		return null;
 	}
 }

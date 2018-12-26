@@ -1,4 +1,4 @@
-package Facade;
+package facade;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -7,12 +7,13 @@ import dbdao.CompanyDBDAO;
 import dbdao.CouponDBDAO;
 import dbdao.CustomerDBDAO;
 import ex.CouponSystemException;
+import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
 import javaBeans.Company;
 import javaBeans.Coupon;
 import javaBeans.Customer;
 
-public class AdminFacade implements CouponClientFacade {
+public class AdminFacade extends AbsFacade {
 	CompanyDBDAO companyDBDAO = new CompanyDBDAO();
 	CustomerDBDAO customerDBDAO = new CustomerDBDAO();
 	CouponDBDAO couponDBDAO = new CouponDBDAO();
@@ -102,10 +103,11 @@ public class AdminFacade implements CouponClientFacade {
 		return customerDBDAO.getAllCustomers();
 	}// getAllCustomers
 
-	@Override
-	public CouponClientFacade login(String name, String password, String clientType) {
-		// TODO Auto-generated method stub
-		return null;
+	public static AbsFacade login(String name, String password) throws InvalidLoginException {
+		if ("admin".equals(name) && "1234".equals(password))
+			return new AdminFacade();
+		throw new InvalidLoginException("Can not login as admin the provided credentials!");
+
 	}// login
 
 }

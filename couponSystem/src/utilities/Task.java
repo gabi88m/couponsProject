@@ -1,4 +1,4 @@
-package couponSystem;
+package utilities;
 
 import java.util.Collection;
 import java.util.Date;
@@ -33,7 +33,7 @@ public class Task implements Runnable {
 						dao.removeCoupon(coupon);
 					}
 				}
-				Thread.sleep(1000 * 60 * 60 * 24);
+				Thread.sleep(1000 * 60 * 60 * 24); // sleep every 24 hours
 			}
 		} catch (CouponSystemException | NoSuchObjectException | InterruptedException e) {
 			// ignore.

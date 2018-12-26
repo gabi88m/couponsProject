@@ -1,4 +1,4 @@
-package couponSystem;
+package utilities;
 
 public final class Schema {
 

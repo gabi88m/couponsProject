@@ -7,15 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import couponSystem.ConnectionPool;
-import couponSystem.Schema;
-import couponSystem.StatementUtils;
 import dao.CompanyDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
 import javaBeans.Company;
 import javaBeans.Coupon;
+import utilities.ConnectionPool;
+import utilities.Schema;
+import utilities.StatementUtils;
 
 public class CompanyDBDAO implements CompanyDAO {
 

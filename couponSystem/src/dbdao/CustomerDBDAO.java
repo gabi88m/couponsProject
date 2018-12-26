@@ -8,15 +8,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import couponSystem.ConnectionPool;
-import couponSystem.Schema;
-import couponSystem.StatementUtils;
 import dao.CustomerDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
 import javaBeans.Coupon;
 import javaBeans.Customer;
+import utilities.ConnectionPool;
+import utilities.Schema;
+import utilities.StatementUtils;
 
 public class CustomerDBDAO implements CustomerDAO {
 

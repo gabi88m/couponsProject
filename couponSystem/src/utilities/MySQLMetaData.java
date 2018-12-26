@@ -1,4 +1,4 @@
-package couponSystem;
+package utilities;
 
 public class MySQLMetaData {
 	public static final String DRIVER_PATH = "com.mysql.cj.jdbc.Driver";

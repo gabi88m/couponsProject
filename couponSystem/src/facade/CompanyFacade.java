@@ -1,4 +1,4 @@
-package Facade;
+package facade;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import ex.NoSuchObjectException;
 import javaBeans.Company;
 import javaBeans.Coupon;
 
-public class CompanyFacade implements CouponClientFacade {
+public class CompanyFacade extends AbsFacade {
 	CouponDBDAO couponDBDAO = new CouponDBDAO();
 	CompanyDBDAO companyDBDAO = new CompanyDBDAO();
 
@@ -74,8 +74,7 @@ public class CompanyFacade implements CouponClientFacade {
 		return couponDBDAO.getCouponByType(type);
 	}// getCouponByType
 
-	@Override
-	public CouponClientFacade login(String name, String password, String clientType) {
+	public static AbsFacade login(String name, String password) {
 		// TODO Auto-generated method stub
 		return null;
 	}// login

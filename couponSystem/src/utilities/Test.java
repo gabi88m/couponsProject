@@ -1,23 +1,27 @@
-package couponSystem;
+package utilities;
 
 import java.sql.SQLException;
 import java.util.Date;
 
-import Facade.AdminFacade;
-import Facade.CompanyFacade;
-import Facade.CustomerFacade;
 import dbdao.CompanyDBDAO;
 import dbdao.CouponDBDAO;
 import dbdao.CustomerDBDAO;
 import ex.CouponSystemException;
+import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
+import facade.AdminFacade;
+import facade.CompanyFacade;
+import facade.CouponSystem;
+import facade.CustomerFacade;
+import facade.LoginType;
 import javaBeans.Company;
 import javaBeans.Coupon;
 import javaBeans.Customer;
 
 public class Test {
 
-	public static void main(String[] args) throws CouponSystemException, NoSuchObjectException, SQLException {
+	public static void main(String[] args)
+			throws CouponSystemException, NoSuchObjectException, SQLException, InvalidLoginException {
 
 		/*****************************************************************************************************************
 		 * for help
@@ -54,13 +58,14 @@ public class Test {
 		/*****************************************************************************************************************
 		 * Facades
 		 */
-		CustomerFacade customerFacade = new CustomerFacade();
+		AdminFacade adminFacade = (AdminFacade) CouponSystem.getInstance().login("admin", "1234", LoginType.ADMIN);
+		CustomerFacade customerFacade = (CustomerFacade) CouponSystem.getInstance().login(name, password, type);
 		CompanyFacade companyFacade = new CompanyFacade();
-		AdminFacade adminFacade = new AdminFacade();
 
 		/*****************************************************************************************************************
 		 * All Tests
 		 */
+		System.out.println(adminFacade.getAllCompanies());
 //		adminFacade.createCompany(company1);
 //		adminFacade.createCustomer(customer1);
 //		System.out.println(adminFacade.getAllCompanies());

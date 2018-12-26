@@ -7,15 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import couponSystem.ConnectionPool;
-import couponSystem.Schema;
-import couponSystem.StatementUtils;
 import dao.CouponDAO;
 import ex.CouponSystemException;
 import ex.NoSuchObjectException;
 import javaBeans.Company;
 import javaBeans.Coupon;
 import javaBeans.Customer;
+import utilities.ConnectionPool;
+import utilities.Schema;
+import utilities.StatementUtils;
 
 public class CouponDBDAO implements CouponDAO {
 
