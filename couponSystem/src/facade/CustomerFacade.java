@@ -3,39 +3,70 @@ package facade;
 import java.util.Collection;
 import java.util.Iterator;
 
+import dbdao.CouponDBDAO;
 import dbdao.CustomerDBDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
+import ex.ObjectAlreadyExistsException;
 import javaBeans.Coupon;
 import javaBeans.Customer;
 
 public class CustomerFacade implements CouponClientFacade {
-	private CustomerDBDAO customerDAO = new CustomerDBDAO();
+	private Customer customer;
+	private CustomerDBDAO customerDBDAO;
+	private CouponDBDAO couponDBDAO;
 
-	public CustomerFacade() {
+	public CustomerFacade(Customer customer, CustomerDBDAO customerDBDAO, CouponDBDAO couponDBDAO) {
+		this.customer = customer;
+		this.customerDBDAO = customerDBDAO;
+		this.couponDBDAO = couponDBDAO;
 	}// ctor
 
-	public void purchaseCoupon(Coupon coupon, Customer customer) throws CouponSystemException, NoSuchObjectException {
-		Collection<Coupon> AllCustomerCoupons = customerDAO.getCustomerCoupons(customer);
-		boolean haveCouponWithSameArgs = false;
+	public static CouponClientFacade login(String name, String password)
+			throws CouponSystemException, InvalidLoginException {
+		CustomerDBDAO customerDBDAO = new CustomerDBDAO();
+		Customer customer = customerDBDAO.login(name, password);
 
-		for (Coupon currCoupon : AllCustomerCoupons) {
-			if (currCoupon.equals(coupon)) {
-				haveCouponWithSameArgs = true;
-				System.out.println("allrady have this coupon!");
-			} else if (currCoupon.getAmount() < 1) {
-				haveCouponWithSameArgs = true;
-				System.out.println("amount have expired!");
-			} // TODO:add date check(not expired???)...
-				// buyCoupon
+		CouponDBDAO couponDBDAO = new CouponDBDAO();
+		return new CustomerFacade(customer, customerDBDAO, couponDBDAO);
+	}
+
+	public void purchaseCoupon(long cpouponId)//
+			throws CouponSystemException, NoSuchObjectException, ObjectAlreadyExistsException {
+
+		Coupon coupon = couponDBDAO.getCouponById(cpouponId);
+
+		if (coupon == null || coupon.getAmount() == 0) {
+			String msg = "No coupons left of this kind.";
+			throw new ObjectAlreadyExistsException(msg);
 		}
-		if (!haveCouponWithSameArgs)
-			customerDAO.addCouponToCustomer(coupon, customer);
+
+		Collection<Coupon> allCoupons = getAllPurchasedCoupons(customer);
+//		if (allCoupons.isEmpty()) {
+//			// buyCoupon
+//			customerDBDAO.addCouponToCustomer(cpouponId, customer);
+//			// Decrement the coupon amount and update the DB
+//			couponDBDAO.getCouponById(cpouponId).setAmount(couponDBDAO.getCouponById(cpouponId).getAmount() - 1);
+//			couponDBDAO.updateCoupon(couponDBDAO.getCouponById(cpouponId));
+//		}//no need to check this
+		for (Coupon currcoupon : allCoupons) {
+			if (currcoupon.getId() == cpouponId) {
+				String msg = "error! , you already have this coupon!";
+				throw new ObjectAlreadyExistsException(msg);
+			}
+		}
+
+		// buyCoupon
+		customerDBDAO.addCouponToCustomer(cpouponId, customer);
+		// Decrement the coupon amount and update the DB
+		coupon.setAmount(coupon.getAmount() - 1);
+		couponDBDAO.updateCoupon(coupon);// TODO:fix decrement coupon amount
+
 	}// purchaseCoupon
 
 	public Collection<Coupon> getAllPurchasedCoupons(Customer customer) throws CouponSystemException {
-		return customerDAO.getCustomerCoupons(customer);
+		return customerDBDAO.getCustomerCoupons(customer);
 	}// getAllPurchasedCoupons
 
 	public Collection<Coupon> getAllPurchasedCouponsByType(Customer customer, Coupon.CouponType type)
@@ -61,12 +92,5 @@ public class CustomerFacade implements CouponClientFacade {
 		}
 		return myCoupons;
 	}// getAllPurchasedCouponsByPrice
-
-	public static CouponClientFacade login(String name, String password)
-			throws CouponSystemException, InvalidLoginException {
-		CustomerDBDAO customerDBDAO = new CustomerDBDAO();
-		Customer customer = customerDBDAO.login(name, password);
-		return new CustomerFacade();
-	}
 
 }

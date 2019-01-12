@@ -3,42 +3,35 @@ package utilities;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import ex.CouponSystemException;
 
 public class ConnectionPool {
 	private static ConnectionPool INSTSNCE;
 	private static final int MAX_CONNECTIONS = 10;
-	private LinkedBlockingDeque<Connection> connections;
+	private LinkedBlockingQueue<Connection> connections;
 
 	static {
 		try {
 			Class.forName(MySQLMetaData.DRIVER_PATH);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	private ConnectionPool() throws CouponSystemException {
-		connections = new LinkedBlockingDeque<Connection>();
-		try {
-			for (int i = 0; i < 9; i++) {
+		connections = new LinkedBlockingQueue<>(MAX_CONNECTIONS);
+		for (int i = 0; i < MAX_CONNECTIONS; i++) {
+			try {
 				connections.offer(createConnection());
+			} catch (SQLException e) {
+				String msg = "Unable to get a connection!" + e.getMessage();
+				throw new CouponSystemException(msg);
 			}
-		} catch (SQLException e) {
-			throw new CouponSystemException("Unable to get a connection!");
-
 		}
+
 	}// ctor
-
-	public static ConnectionPool getInstance() throws CouponSystemException {
-		if (INSTSNCE == null) {
-			INSTSNCE = new ConnectionPool();
-		}
-		return INSTSNCE;
-	}// getInstances
 
 	public static Connection createConnection() throws SQLException {
 		return DriverManager.getConnection(MySQLMetaData.DATABASE_URL, "root", "123456");
@@ -46,6 +39,7 @@ public class ConnectionPool {
 
 	public synchronized Connection getConnection() throws CouponSystemException {
 		try {
+//			System.out.println("connection taken");
 			return connections.take();
 		} catch (InterruptedException e) {
 			throw new CouponSystemException("Unable to offer a connection!");
@@ -53,15 +47,7 @@ public class ConnectionPool {
 		}
 	}// getConnection
 
-	public void returnConnection(Connection connection) throws CouponSystemException {
-		try {
-			connections.put(connection);
-		} catch (InterruptedException e) {
-			throw new CouponSystemException("There is not enough space to return the connection!");
-		}
-	}// returnConnection
-
-	public void closeAllConnections() throws CouponSystemException {
+	public synchronized void closeAllConnections() throws CouponSystemException {
 		Connection connection;
 		while ((connection = connections.poll()) != null) {
 			try {
@@ -71,5 +57,23 @@ public class ConnectionPool {
 			}
 		}
 	}// closeAllConnections
+
+	public synchronized static ConnectionPool getInstance() throws CouponSystemException {
+		if (INSTSNCE == null) {
+			INSTSNCE = new ConnectionPool();
+		}
+		return INSTSNCE;
+	}// getInstances
+
+	public synchronized void returnConnection(Connection connection) throws CouponSystemException {
+		try {
+//			System.out.println("connection returned");
+			connections.put(connection);
+		} catch (InterruptedException e) {
+			String msg = "There is not enough space to return the connection!";
+			System.out.println(msg);
+			throw new CouponSystemException(msg);
+		}
+	}// returnConnection
 
 }

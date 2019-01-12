@@ -1,12 +1,14 @@
 package facade;
 
+import java.sql.SQLException;
+
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 
 public interface CouponClientFacade {
 
 	public static CouponClientFacade login(String name, String password, LoginType clientType)
-			throws InvalidLoginException, CouponSystemException {
+			throws InvalidLoginException, CouponSystemException, SQLException {
 		switch (clientType) {
 			case ADMIN:
 				return AdminFacade.login(name, password);

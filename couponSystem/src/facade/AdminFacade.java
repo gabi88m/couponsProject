@@ -1,7 +1,6 @@
 package facade;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import dbdao.CompanyDBDAO;
 import dbdao.CouponDBDAO;
@@ -9,6 +8,7 @@ import dbdao.CustomerDBDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
+import ex.ObjectAlreadyExistsException;
 import javaBeans.Company;
 import javaBeans.Coupon;
 import javaBeans.Customer;
@@ -24,36 +24,47 @@ public class AdminFacade implements CouponClientFacade {
 		couponDBDAO = new CouponDBDAO();
 	}// ctor
 
-	public void createCompany(Company company) throws CouponSystemException, NoSuchObjectException {
-		Collection<Company> myCompanies = companyDBDAO.getAllCompamies();
-		boolean haveCompany = false;
-		for (Iterator<Company> iterator = myCompanies.iterator(); iterator.hasNext();) {
-			Company cuurcompany = iterator.next();
-			if (cuurcompany.getCompName().equals(company.getCompName())) {
-				haveCompany = true;
+	public static CouponClientFacade login(String name, String password) throws InvalidLoginException {
+		if ("admin".equals(name) && "1234".equals(password)) {// admin can be only this user
+			return new AdminFacade();
+		}
+		String msg = "Can not login as admin the provided credentials!";
+		throw new InvalidLoginException(msg);
+	}// login
+
+	public void createCompany(Company company)
+			throws CouponSystemException, NoSuchObjectException, ObjectAlreadyExistsException {
+		Collection<Company> allCompanies = companyDBDAO.getAllCompanies();
+		for (Company c : allCompanies) {
+			if (c.getCompName().equals(company.getCompName())) {
+				String msg = String.format("Company with name \"%s\" already exists!", c.getCompName());
+				throw new CouponSystemException(msg);
 			}
 		}
-		if (haveCompany) {
-			System.out.println("there is company with the same name!!! cant create!!!!");
 
-		} else {
-			companyDBDAO.createCompany(company);
-		}
+		companyDBDAO.createCompany(company);
 	}// createCompany
 
 	public void removeCompany(Company company) throws CouponSystemException, NoSuchObjectException {
-		Collection<Coupon> myCompanyCoupons = companyDBDAO.getCompanyCoupons(company);
-		if (myCompanyCoupons.isEmpty())
-			for (Coupon currCoupon : myCompanyCoupons) {// will remove all coupons from Join Tables id exist
-				couponDBDAO.removeCompmanyCoupon(currCoupon);
-				couponDBDAO.removeCoupon(currCoupon);
+		Collection<Coupon> coupons = companyDBDAO.getCompanyCoupons(company);
+
+		for (Coupon coupon : coupons) {
+			try {
+				couponDBDAO.removeCoupon(coupon);
+			} catch (CouponSystemException | NoSuchObjectException e) {
+				// We ignore such case.
 			}
-		companyDBDAO.removeCompany(company); // remove the company
+		}
+		companyDBDAO.removeCompany(company);
 	}// removeCompany
 
 	public void updateCompany(Company company) throws CouponSystemException, NoSuchObjectException {
+		Company c = companyDBDAO.getCompany(company.getId());
+
+		if (!c.getCompName().equals(company.getCompName())) {
+			throw new CouponSystemException("Changing company's name is not allowed!");
+		}
 		companyDBDAO.updateCompany(company);
-		// TODO: check what params to update
 	}// updateCompany
 
 	public Company getCompany(long id) throws CouponSystemException, NoSuchObjectException {
@@ -61,55 +72,40 @@ public class AdminFacade implements CouponClientFacade {
 	}// getCompany
 
 	public Collection<Company> getAllCompanies() throws CouponSystemException, NoSuchObjectException {
-		return companyDBDAO.getAllCompamies();
+		return companyDBDAO.getAllCompanies();
 	}// getAllCompanies
 
-	public void createCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException {
-		Collection<Customer> myCustomers = customerDBDAO.getAllCustomers();
-		boolean haveCompany = false;
-		for (Iterator<Customer> iterator = myCustomers.iterator(); iterator.hasNext();) {
-			Customer currCustomer = iterator.next();
-			if (currCustomer.getCustName().equals(customer.getCustName())) {
-				haveCompany = true;
+	public void createCustomer(Customer customer)
+			throws CouponSystemException, NoSuchObjectException, ObjectAlreadyExistsException {
+		Collection<Customer> allCustomers = customerDBDAO.getAllCustomers();
+
+		for (Customer c : allCustomers) {
+			if (c.getCustName().equals(customer.getCustName())) {
+				String msg = String.format("Customer with name %s already exists.", c.getCustName());
+				throw new ObjectAlreadyExistsException(msg);
 			}
 		}
-		if (haveCompany) {
-			System.out.println("there is company with the same name!!! cant create!!!!");
-
-		} else {
-			customerDBDAO.createCustomer(customer);
-		}
+		customerDBDAO.createCustomer(customer);
 	}// createCustomer
 
 	public void removeCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException {
-		Collection<Long> customerCoupontable = couponDBDAO.getFromCustomerCoupons();
-		if (customerCoupontable.isEmpty()) {// if customer have not coupons yet
-			customerDBDAO.removeCustomer(customer);
-		} else {
-			couponDBDAO.removeCustomerCoupon(customer);
-			customerDBDAO.removeCustomer(customer);
-		}
-
+		customerDBDAO.removeCustomer(customer);
 	}// removeCustomer
 
 	public void updateCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException {
+		Customer c = customerDBDAO.getCustomer(customer.getId());
+		if (!c.getCustName().equals(customer.getCustName())) {
+			throw new CouponSystemException("Changing customer's name is not allowed!");
+		}
 		customerDBDAO.updateCustomer(customer);
-		// TODO: check what params to update
 	}// updateCustomer
 
 	public Customer getCustomer(long id) throws CouponSystemException, NoSuchObjectException {
 		return customerDBDAO.getCustomer(id);
 	}// getCustomer
 
-	public Collection<Customer> getAllCustomers() throws CouponSystemException, NoSuchObjectException {
+	public Collection<Customer> getAllCustomers() throws CouponSystemException {
 		return customerDBDAO.getAllCustomers();
 	}// getAllCustomers
-
-	public static CouponClientFacade login(String name, String password) throws InvalidLoginException {
-		if ("admin".equals(name) && "1234".equals(password)) {// admin can be only this user
-			return new AdminFacade();
-		}
-		throw new InvalidLoginException("Can not login as admin the provided credentials!");
-	}// login
 
 }

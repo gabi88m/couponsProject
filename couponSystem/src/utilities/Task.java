@@ -1,9 +1,8 @@
 package utilities;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 
-import dao.CouponDAO;
 import dbdao.CouponDBDAO;
 import ex.CouponSystemException;
 import ex.NoSuchObjectException;
@@ -14,8 +13,9 @@ public class Task implements Runnable {
 	private CouponDBDAO dao;
 	private boolean isAlive;
 
-	public Task(CouponDAO dao) {
-		this.dao = (CouponDBDAO) dao;
+	public Task(CouponDBDAO dao) {
+		this.dao = dao;
+
 	}// ctor
 
 	public static Task create() {
@@ -29,8 +29,10 @@ public class Task implements Runnable {
 			while (isAlive) {
 				Collection<Coupon> allCoupons = dao.getAllCoupons();
 				for (Coupon coupon : allCoupons) {
-					if (coupon.getEndDate().before(new Date())) {
+					if (coupon.getEndDate().isBefore(LocalDate.now())) {
+						System.out.println("from Task/run()");
 						dao.removeCoupon(coupon);
+
 					}
 				}
 				Thread.sleep(1000 * 60 * 60 * 24); // sleep every 24 hours
@@ -38,7 +40,6 @@ public class Task implements Runnable {
 		} catch (CouponSystemException | NoSuchObjectException | InterruptedException e) {
 			// ignore.
 		}
-
 	}// run
 
 	public void stop() {

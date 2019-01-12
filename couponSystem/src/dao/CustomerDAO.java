@@ -10,19 +10,23 @@ import javaBeans.Customer;
 
 public interface CustomerDAO {
 
-	public void createCustomer(Customer customer) throws CouponSystemException;
+	void createTable() throws CouponSystemException;
 
-	public void removeCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException;
+	void createCustomer(Customer customer) throws CouponSystemException;
 
-	public void updateCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException;
+	void removeCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException;
 
-	public Customer getCustomer(long id) throws CouponSystemException, NoSuchObjectException;
+	void updateCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException;
 
-	public Collection<Customer> getAllCustomers() throws CouponSystemException, NoSuchObjectException;
+	Customer getCustomer(long id) throws CouponSystemException, NoSuchObjectException;
 
-	public Collection<Coupon> getCustomerCoupons(Customer customer) throws CouponSystemException, NoSuchObjectException;
+	Collection<Customer> getAllCustomers() throws CouponSystemException;
 
-	public Customer login(String custName, String Password) throws CouponSystemException, InvalidLoginException;
+	Collection<Coupon> getCustomerCoupons(Customer customer) throws CouponSystemException, NoSuchObjectException;
 
-//	public void addCouponToCustomer(Coupon coupon, Customer customer) throws ConnectionExeption, InvalidLoginException;
+	void addCouponToCustomer(long couponId, Customer customer)
+			throws InvalidLoginException, CouponSystemException, NoSuchObjectException;
+
+	Customer login(String custName, String Password) throws CouponSystemException, InvalidLoginException;
+
 }

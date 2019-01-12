@@ -1,5 +1,7 @@
 package facade;
 
+import java.sql.SQLException;
+
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import utilities.ConnectionPool;
@@ -7,23 +9,24 @@ import utilities.Task;
 
 public class CouponSystem {
 
-	private static CouponSystem instance;
+	private static CouponSystem INSTANCE;
 	private Thread dailyThread;
 	private Task task;
 
 	private CouponSystem() {
-		task = Task.create();
+		dailyThread = new Thread(Task.create());
+//		dailyThread.setDaemon(true);
 	}// ctor
 
 	public static CouponSystem getInstance() {
-		if (instance == null) {
-			instance = new CouponSystem();
+		if (INSTANCE == null) {
+			INSTANCE = new CouponSystem();
 		}
-		return instance;
+		return INSTANCE;
 	}// getInstance
 
 	public CouponClientFacade login(String name, String password, LoginType type)
-			throws InvalidLoginException, CouponSystemException {
+			throws InvalidLoginException, CouponSystemException, SQLException {
 		return CouponClientFacade.login(name, password, type);
 	}// login
 

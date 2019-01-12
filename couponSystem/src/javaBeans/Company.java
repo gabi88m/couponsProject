@@ -9,6 +9,10 @@ public class Company {
 	private String email;
 	private Collection<Coupon> coupons;
 
+	public Company() {
+
+	}// ctor
+
 	public Company(long id, String compName, String password, String email) {
 		super();
 		this.id = id;

@@ -8,6 +8,10 @@ public class Customer {
 	private String password;
 	private Collection<Coupon> coupons;
 
+	public Customer() {
+
+	}// ctor
+
 	public Customer(long id, String custName, String password) {
 		super();
 		this.id = id;

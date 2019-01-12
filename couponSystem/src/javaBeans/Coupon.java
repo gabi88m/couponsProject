@@ -1,12 +1,12 @@
 package javaBeans;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Coupon {
 	private long id;
 	private String title;
-	private Date startDate;
-	private Date endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	private Long amount;
 	private CouponType couponType;
 	private String message;
@@ -17,8 +17,12 @@ public class Coupon {
 		RESTURANS, ELECTRICITY, FOOD, HEALTH, SPORTS, CAMPING, TRAVELLING
 	}// ENUM - CouponType
 
-	public Coupon(long id, String title, Date startDate, Date endDate, long amount, String couponType, String message,
-			double price, String image) {
+	public Coupon() {
+
+	}// ctor
+
+	public Coupon(long id, String title, LocalDate startDate, LocalDate endDate, long amount, String couponType,
+			String message, double price, String image) {
 		super();
 		this.id = id;
 		this.title = title;
@@ -48,19 +52,19 @@ public class Coupon {
 		this.title = title;
 	}
 
-	public Date getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
 

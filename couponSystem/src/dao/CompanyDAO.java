@@ -10,6 +10,8 @@ import javaBeans.Coupon;
 
 public interface CompanyDAO {
 
+	void createTable() throws CouponSystemException;
+
 	public void createCompany(Company company) throws CouponSystemException;
 
 	public void removeCompany(Company company) throws CouponSystemException, NoSuchObjectException;
@@ -18,9 +20,10 @@ public interface CompanyDAO {
 
 	public Company getCompany(long id) throws CouponSystemException, NoSuchObjectException;
 
-	public Collection<Company> getAllCompamies() throws CouponSystemException, NoSuchObjectException;
+	public Collection<Company> getAllCompanies() throws CouponSystemException, NoSuchObjectException;
 
 	public Collection<Coupon> getCompanyCoupons(Company company) throws CouponSystemException, NoSuchObjectException;
 
 	public Company login(String compName, String password) throws CouponSystemException, InvalidLoginException;
+
 }

@@ -1,4 +1,4 @@
-package utilities;
+package dbdao;
 
 public final class Schema {
 
@@ -49,15 +49,28 @@ public final class Schema {
 	 */
 	private static final String CREATE_TABLE_COUPON = "create table if not exists " + TABLE_NAME_COUPON + "(" + ID
 			+ " integer primary key auto_increment," + COUPON_TITLE + " varchar(100), " + COUPON_START_DATE + " date, "
-			+ COUPON_END_DATE + " date, " + COUPON_AMOUNT + " integer," + COUPON_TYPE + " integer, " + COUPON_MESSAGE
-			+ " varchar(100), " + COUPON_PRICE + " double," + COUPON_IMAGE + " varchar(100));";
+			+ COUPON_END_DATE + " date, " + COUPON_AMOUNT + " integer," + COUPON_TYPE + " varchar(100), "
+			+ COUPON_MESSAGE + " varchar(100), " + COUPON_PRICE + " double," + COUPON_IMAGE + " varchar(100));";
 
 	private static final String CREATE_TABLE_CUSTOMER = "create table if not exists " + TABLE_NAME_CUSTOMER + "(" + ID
-			+ " integer primary key auto_increment," + CUSTOMER_NAME + " varchar(100), " + CUSTOMER_PASSWORD;
+			+ " integer primary key auto_increment," + CUSTOMER_NAME + " varchar(100), " + CUSTOMER_PASSWORD
+			+ " varchar(100));";
 
 	private static final String CREATE_TABLE_COMPANY = "create table if not exists " + TABLE_NAME_COMPANY + "(" + ID
 			+ " integer primary key auto_increment," + COMPANY_NAME + " varchar(100), " + COMPANY_PASSWORD
-			+ " varchar(100), " + COMPANY_EMAIL;
+			+ " varchar(100), " + COMPANY_EMAIL + " varchar(100));";
+
+	private static final String CREATE_TABLE_CUSTOMER_COUPON = "create table if not exists "
+			+ TABLE_NAME_CUSTOMER_COUPON + " (" + CUSTOMER_JOIN_ID + " integer, " + COUPON_JOIN_ID + " integer, "
+			+ " foreign key (" + CUSTOMER_JOIN_ID + ") references " + TABLE_NAME_CUSTOMER + "(" + ID
+			+ ") on delete cascade," + " foreign key (" + COUPON_JOIN_ID + ") references " + TABLE_NAME_COUPON + "("
+			+ ID + ") on delete cascade," + " primary key (" + CUSTOMER_JOIN_ID + "," + COUPON_JOIN_ID + "));";
+
+	private static final String CREATE_TABLE_COMPANY_COUPON = "create table if not exists " + TABLE_NAME_COMPANY_COUPON
+			+ " (" + COMP_JOIN_ID + " integer, " + COUPON_JOIN_ID + " integer, " + " foreign key (" + COMP_JOIN_ID
+			+ ") references " + TABLE_NAME_COMPANY + "(" + ID + ") on delete cascade," + " foreign key ("
+			+ COUPON_JOIN_ID + ") references " + TABLE_NAME_COUPON + "(" + ID + ") on delete cascade,"
+			+ " primary key (" + COMP_JOIN_ID + "," + COUPON_JOIN_ID + "));";
 
 	public static String getCreateTableCoupon() {
 		return CREATE_TABLE_COUPON;
@@ -70,6 +83,14 @@ public final class Schema {
 	public static String getCreateTableCompany() {
 		return CREATE_TABLE_COMPANY;
 	}// getCreateTableCompany
+
+	public static String getCreateTableCustomerCoupon() {
+		return CREATE_TABLE_CUSTOMER_COUPON;
+	}
+
+	public static String getCreateTableCompanyCoupon() {
+		return CREATE_TABLE_COMPANY_COUPON;
+	}
 
 	/*****************************************************************************************************************
 	 * customer

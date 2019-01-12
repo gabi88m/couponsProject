@@ -8,16 +8,18 @@ import javaBeans.Coupon;
 
 public interface CouponDAO {
 
-	public void createCoupon(Coupon coupon) throws CouponSystemException;
+	void createTable() throws CouponSystemException;
 
-	public void removeCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException;
+	void createCoupon(Coupon coupon) throws CouponSystemException;
 
-	public void updateCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException;
+	void removeCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException;
 
-	public Coupon getCoupon(long id) throws CouponSystemException, NoSuchObjectException;
+	void updateCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException;
 
-	public Collection<Coupon> getAllCoupons() throws CouponSystemException;
+	Coupon getCouponById(long id) throws CouponSystemException, NoSuchObjectException;
 
-	public Collection<Coupon> getCouponByType(Coupon.CouponType type)
-			throws CouponSystemException, NoSuchObjectException;
+	Collection<Coupon> getAllCoupons() throws CouponSystemException;
+
+	Collection<Coupon> getCouponByType(Coupon.CouponType type) throws CouponSystemException, NoSuchObjectException;
+
 }

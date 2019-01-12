@@ -9,45 +9,57 @@ import dbdao.CouponDBDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
+import ex.ObjectAlreadyExistsException;
 import javaBeans.Company;
 import javaBeans.Coupon;
 
 public class CompanyFacade implements CouponClientFacade {
-	CouponDBDAO couponDBDAO = new CouponDBDAO();
-	CompanyDBDAO companyDBDAO = new CompanyDBDAO();
+	Company company;
+	CompanyDBDAO companyDBDAO;
+	CouponDBDAO couponDBDAO;
 
-	public CompanyFacade() {
+	public CompanyFacade(Company company, CompanyDBDAO companyDBDAO, CouponDBDAO couponDBDAO) {
+		this.company = company;
+		this.couponDBDAO = couponDBDAO;
+		this.companyDBDAO = companyDBDAO;
 
 	}// ctor
 
-	public void createCoupon(Coupon coupon, Company company) throws CouponSystemException, SQLException {
+	public static CouponClientFacade login(String name, String password)
+			throws CouponSystemException, InvalidLoginException, SQLException {
+
+		CompanyDBDAO companyDBDAO = new CompanyDBDAO();
+		Company company = companyDBDAO.login(name, password);
+		CouponDBDAO couponDBDAO = new CouponDBDAO();
+
+		return new CompanyFacade(company, companyDBDAO, couponDBDAO);
+	}// login
+
+	public void createCoupon(Coupon coupon) throws CouponSystemException, SQLException, ObjectAlreadyExistsException {
 		Collection<Coupon> allCoupons = couponDBDAO.getAllCoupons();
 		boolean haveCouponWithSameTitle = false;
 
-		if (allCoupons.isEmpty()) {// check if thare is any coupons , if not ignore the title check
+		if (allCoupons.isEmpty()) { // check if thare is any coupons , if not ignore the title check
 			couponDBDAO.createCoupon(coupon);
 			companyDBDAO.addCouponToCompany(coupon, company);
 		} else {
 			for (Coupon coupons : allCoupons) {
 
-				if (coupons.getTitle().equals(coupon.getTitle())) {
-					System.out.println(coupons.getTitle());
-					System.out.println(coupon.getTitle());
+				if (coupons.getTitle().equals(coupon.getTitle())) { // if coupon with same title exist.
 					haveCouponWithSameTitle = true;
-					System.out.println("error! , you have coupon with same title!");
+					String msg = "error! , you have coupon with same title!";
+					throw new ObjectAlreadyExistsException(msg);
 				}
 			}
 			if (!(haveCouponWithSameTitle)) {
 				couponDBDAO.createCoupon(coupon);
 				companyDBDAO.addCouponToCompany(coupon, company);
 			}
-
 		}
 	}// createCoupon
 
 	public void removeCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException {
-		couponDBDAO.removeCompmanyCoupon(coupon); // remove from join tabels
-//		couponDAO.removeCustomerCoupon(coupon); // no need 
+//		couponDBDAO.removeCompmanyCoupon(coupon); // remove from join tabels
 		couponDBDAO.removeCoupon(coupon); // remove the coupon
 	}// removeCoupon
 
@@ -56,7 +68,12 @@ public class CompanyFacade implements CouponClientFacade {
 	}// removeCoupon
 
 	public Coupon getCoupon(long id) throws CouponSystemException, NoSuchObjectException {
-		return couponDBDAO.getCoupon(id);
+		// TODO:check if it works
+		if (couponDBDAO.getCouponById(id).equals(null)) {
+			String msg = "There is no such coupons!";
+			throw new NoSuchObjectException(msg);
+		}
+		return couponDBDAO.getCouponById(id);
 	}// getCoupon
 
 	public Collection<Coupon> getAllCompanyCoupons(Company company)
@@ -64,22 +81,18 @@ public class CompanyFacade implements CouponClientFacade {
 		Collection<Coupon> myCoupons = new ArrayList<>();
 		Collection<Long> myCompanyCouponsIds = couponDBDAO.getFromCompanyCoupons(company);
 		for (Long coupons : myCompanyCouponsIds) {
-
-			myCoupons.add(couponDBDAO.getCoupon(coupons));
+			myCoupons.add(couponDBDAO.getCouponById(coupons));
 		}
 		return myCoupons;
 	}// getAllCompanyCoupons
 
 	public Collection<Coupon> getCouponByType(Coupon.CouponType type)
 			throws CouponSystemException, NoSuchObjectException {
+		if (couponDBDAO.getCouponByType(type).isEmpty()) {
+			String msg = "There is no such coupons!";
+			throw new NoSuchObjectException(msg);
+		}
 		return couponDBDAO.getCouponByType(type);
 	}// getCouponByType
-
-	public static CouponClientFacade login(String name, String password)
-			throws CouponSystemException, InvalidLoginException {
-		CompanyDBDAO companyDBDAO = new CompanyDBDAO();
-		Company company = companyDBDAO.login(name, password);
-		return new CompanyFacade();
-	}// login
 
 }
