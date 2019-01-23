@@ -1,4 +1,4 @@
-package dbdao;
+package dao;
 
 public final class Schema {
 

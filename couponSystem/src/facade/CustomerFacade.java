@@ -3,8 +3,8 @@ package facade;
 import java.util.Collection;
 import java.util.Iterator;
 
-import dbdao.CouponDBDAO;
-import dbdao.CustomerDBDAO;
+import dao.CouponDBDAO;
+import dao.CustomerDBDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
@@ -42,7 +42,7 @@ public class CustomerFacade implements CouponClientFacade {
 			throw new ObjectAlreadyExistsException(msg);
 		}
 
-		Collection<Coupon> allCoupons = getAllPurchasedCoupons(customer);
+		Collection<Coupon> allCoupons = getAllPurchasedCoupons();
 //		if (allCoupons.isEmpty()) {
 //			// buyCoupon
 //			customerDBDAO.addCouponToCustomer(cpouponId, customer);
@@ -65,13 +65,12 @@ public class CustomerFacade implements CouponClientFacade {
 
 	}// purchaseCoupon
 
-	public Collection<Coupon> getAllPurchasedCoupons(Customer customer) throws CouponSystemException {
+	public Collection<Coupon> getAllPurchasedCoupons() throws CouponSystemException {
 		return customerDBDAO.getCustomerCoupons(customer);
 	}// getAllPurchasedCoupons
 
-	public Collection<Coupon> getAllPurchasedCouponsByType(Customer customer, Coupon.CouponType type)
-			throws CouponSystemException {
-		Collection<Coupon> myCoupons = getAllPurchasedCoupons(customer);
+	public Collection<Coupon> getAllPurchasedCouponsByType(Coupon.CouponType type) throws CouponSystemException {
+		Collection<Coupon> myCoupons = getAllPurchasedCoupons();
 		for (Iterator<Coupon> iterator = myCoupons.iterator(); iterator.hasNext();) {
 			Coupon coupon = iterator.next();
 			if (coupon.getCouponType() != type) {
@@ -81,9 +80,8 @@ public class CustomerFacade implements CouponClientFacade {
 		return myCoupons;
 	}// getAllPurchasedCouponsByType
 
-	public Collection<Coupon> getAllPurchasedCouponsByPrice(Customer customer, long price)
-			throws CouponSystemException {
-		Collection<Coupon> myCoupons = getAllPurchasedCoupons(customer);
+	public Collection<Coupon> getAllPurchasedCouponsByPrice(long price) throws CouponSystemException {
+		Collection<Coupon> myCoupons = getAllPurchasedCoupons();
 		for (Iterator<Coupon> iterator = myCoupons.iterator(); iterator.hasNext();) {
 			Coupon coupon = iterator.next();
 			if (coupon.getPrice() != price) {

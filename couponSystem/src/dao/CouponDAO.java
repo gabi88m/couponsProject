@@ -12,7 +12,7 @@ public interface CouponDAO {
 
 	void createCoupon(Coupon coupon) throws CouponSystemException;
 
-	void removeCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException;
+	void removeCoupon(long couponId) throws CouponSystemException, NoSuchObjectException;
 
 	void updateCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException;
 

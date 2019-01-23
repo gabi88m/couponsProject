@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 
-import dbdao.CompanyDBDAO;
-import dbdao.CouponDBDAO;
-import dbdao.CustomerDBDAO;
+import dao.CompanyDBDAO;
+import dao.CouponDBDAO;
+import dao.CustomerDBDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
@@ -72,7 +72,7 @@ public class CouponTest {
 		 * All Tests - all works!!
 		 */
 
-//		adminFacade.createCompany(company3);
+		adminFacade.createCompany(company3);
 //		adminFacade.createCustomer(customer3);
 //		System.out.println(adminFacade.getAllCompanies());
 //		System.out.println(adminFacade.getAllCustomers());

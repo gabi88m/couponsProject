@@ -2,9 +2,9 @@ package facade;
 
 import java.util.Collection;
 
-import dbdao.CompanyDBDAO;
-import dbdao.CouponDBDAO;
-import dbdao.CustomerDBDAO;
+import dao.CompanyDBDAO;
+import dao.CouponDBDAO;
+import dao.CustomerDBDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
@@ -45,17 +45,17 @@ public class AdminFacade implements CouponClientFacade {
 		companyDBDAO.createCompany(company);
 	}// createCompany
 
-	public void removeCompany(Company company) throws CouponSystemException, NoSuchObjectException {
-		Collection<Coupon> coupons = companyDBDAO.getCompanyCoupons(company);
+	public void removeCompany(long companyId) throws CouponSystemException, NoSuchObjectException {
+		Collection<Coupon> coupons = companyDBDAO.getCompanyCoupons(companyId);
 
 		for (Coupon coupon : coupons) {
 			try {
-				couponDBDAO.removeCoupon(coupon);
+				couponDBDAO.removeCoupon(coupon.getId());
 			} catch (CouponSystemException | NoSuchObjectException e) {
 				// We ignore such case.
 			}
 		}
-		companyDBDAO.removeCompany(company);
+		companyDBDAO.removeCompany(companyId);
 	}// removeCompany
 
 	public void updateCompany(Company company) throws CouponSystemException, NoSuchObjectException {
@@ -88,8 +88,8 @@ public class AdminFacade implements CouponClientFacade {
 		customerDBDAO.createCustomer(customer);
 	}// createCustomer
 
-	public void removeCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException {
-		customerDBDAO.removeCustomer(customer);
+	public void removeCustomer(long customerId) throws CouponSystemException, NoSuchObjectException {
+		customerDBDAO.removeCustomer(customerId);
 	}// removeCustomer
 
 	public void updateCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException {

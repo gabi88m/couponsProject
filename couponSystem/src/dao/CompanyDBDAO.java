@@ -1,4 +1,4 @@
-package dbdao;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import dao.CompanyDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
@@ -73,19 +72,19 @@ public class CompanyDBDAO implements CompanyDAO {
 	}// createCompany
 
 	@Override
-	public void removeCompany(Company company) throws CouponSystemException, NoSuchObjectException {
+	public void removeCompany(long companyId) throws CouponSystemException, NoSuchObjectException {
 		Connection c1 = null;
 		PreparedStatement st = null;
 
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
 			st = c1.prepareStatement(Schema.getDeleteCompany());
-			st.setLong(1, company.getId());
+			st.setLong(1, companyId);
 			int rowAffected = st.executeUpdate();
 			if (rowAffected == 0) {
 				// if the "rowAffected" equals to 0 there is not such company , and we will
 				// throw a massage
-				String msg = "Unable to remove company with id= " + company.getId();
+				String msg = "Unable to remove company with id= " + companyId;
 				throw new NoSuchObjectException(msg);
 			}
 		} catch (SQLException e) {
@@ -124,7 +123,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	}// updateCompany
 
 	@Override
-	public Company getCompany(long id) throws CouponSystemException, NoSuchObjectException {
+	public Company getCompany(long companyId) throws CouponSystemException, NoSuchObjectException {
 		Connection c1 = null;
 		PreparedStatement st = null;
 		Company company = null;
@@ -132,14 +131,14 @@ public class CompanyDBDAO implements CompanyDAO {
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
 			st = c1.prepareStatement(Schema.getSelectCompanyById());
-			st.setLong(1, id);
+			st.setLong(1, companyId);
 			res = st.executeQuery();
 			if (res.first()) { // if result set is not empty
 				company = resultSetToCompany(res);// turn the result to company
-				company.setCoupons(getCompanyCoupons(company));// query to get company coupons
+				company.setCoupons(getCompanyCoupons(companyId));// query to get company coupons
 			} else {
 				// else the result set is empty! , and we will throw a massage
-				String msg = "No such commany invalid id = " + id;
+				String msg = "No such commany invalid id = " + companyId;
 				throw new NoSuchObjectException(String.format(msg));
 			}
 		} catch (SQLException e) {
@@ -154,7 +153,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	}// getCompany
 
 	@Override
-	public Collection<Company> getAllCompanies() throws CouponSystemException, NoSuchObjectException {
+	public Collection<Company> getAllCompanies() throws CouponSystemException {
 		Connection c1 = null;
 		PreparedStatement st = null;
 		Collection<Company> allCompanies = new ArrayList<>(); // will return this list of companies empty/or full
@@ -172,7 +171,7 @@ public class CompanyDBDAO implements CompanyDAO {
 				company = getCompany(res.getLong(1));
 				allCompanies.add(company);
 			}
-		} catch (SQLException e) {
+		} catch (SQLException | NoSuchObjectException e) {
 			String msg = "Unable to get all companies: " + e.getMessage();
 			throw new CouponSystemException(msg);// if there will be an sql problem we will throw a massage
 		} finally {
@@ -184,7 +183,7 @@ public class CompanyDBDAO implements CompanyDAO {
 	}// getAllCompamies
 
 	@Override
-	public Collection<Coupon> getCompanyCoupons(Company company) throws CouponSystemException, NoSuchObjectException {
+	public Collection<Coupon> getCompanyCoupons(long companyId) throws CouponSystemException, NoSuchObjectException {
 		Connection c1 = null;
 		PreparedStatement st = null;
 		ResultSet res = null;
@@ -193,7 +192,7 @@ public class CompanyDBDAO implements CompanyDAO {
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
 			st = c1.prepareStatement(Schema.getSelectCouponsByCompanyInnerJoinById());
-			st.setLong(1, company.getId());
+			st.setLong(1, companyId);
 
 			res = st.executeQuery();
 

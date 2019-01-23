@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import dbdao.CompanyDBDAO;
-import dbdao.CouponDBDAO;
+import dao.CompanyDBDAO;
+import dao.CouponDBDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
@@ -58,9 +58,9 @@ public class CompanyFacade implements CouponClientFacade {
 		}
 	}// createCoupon
 
-	public void removeCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException {
+	public void removeCoupon(long couponID) throws CouponSystemException, NoSuchObjectException {
 //		couponDBDAO.removeCompmanyCoupon(coupon); // remove from join tabels
-		couponDBDAO.removeCoupon(coupon); // remove the coupon
+		couponDBDAO.removeCoupon(couponID); // remove the coupon
 	}// removeCoupon
 
 	public void updateCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException {

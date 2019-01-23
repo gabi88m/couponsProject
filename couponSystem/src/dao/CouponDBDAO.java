@@ -1,4 +1,4 @@
-package dbdao;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import dao.CouponDAO;
 import ex.CouponSystemException;
 import ex.NoSuchObjectException;
 import javaBeans.Company;
@@ -65,18 +64,18 @@ public class CouponDBDAO implements CouponDAO {
 	}// createCoupon
 
 	@Override
-	public void removeCoupon(Coupon coupon) throws CouponSystemException, NoSuchObjectException {
+	public void removeCoupon(long couponId) throws CouponSystemException, NoSuchObjectException {
 		Connection c1 = null;
 		PreparedStatement st = null;
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
 			st = c1.prepareStatement(Schema.getDeleteCoupon());
-			st.setLong(1, coupon.getId());
+			st.setLong(1, couponId);
 			int rowAffected = st.executeUpdate();
 			if (rowAffected == 0) {
 				// if the "rowAffected" equals to 0 there is not such Coupon , and we will // if
 				// the "rowAffected" equals to 0 there is not such Coupon , and we will
-				String msg = "Unable to remove Coupon with id= " + coupon.getId();
+				String msg = "Unable to remove Coupon with id= " + couponId;
 				throw new NoSuchObjectException(msg);
 			}
 		} catch (SQLException e) {

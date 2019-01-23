@@ -3,7 +3,7 @@ package utilities;
 import java.time.LocalDate;
 import java.util.Collection;
 
-import dbdao.CouponDBDAO;
+import dao.CouponDBDAO;
 import ex.CouponSystemException;
 import ex.NoSuchObjectException;
 import javaBeans.Coupon;
@@ -31,7 +31,7 @@ public class Task implements Runnable {
 				for (Coupon coupon : allCoupons) {
 					if (coupon.getEndDate().isBefore(LocalDate.now())) {
 						System.out.println("from Task/run()");
-						dao.removeCoupon(coupon);
+						dao.removeCoupon(coupon.getId());
 
 					}
 				}

@@ -2,6 +2,7 @@ package dao;
 
 import java.util.Collection;
 
+import ex.CouponAlreadyPurchasedException;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
@@ -14,7 +15,7 @@ public interface CustomerDAO {
 
 	void createCustomer(Customer customer) throws CouponSystemException;
 
-	void removeCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException;
+	void removeCustomer(long customerId) throws CouponSystemException, NoSuchObjectException;
 
 	void updateCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException;
 
@@ -25,7 +26,7 @@ public interface CustomerDAO {
 	Collection<Coupon> getCustomerCoupons(Customer customer) throws CouponSystemException, NoSuchObjectException;
 
 	void addCouponToCustomer(long couponId, Customer customer)
-			throws InvalidLoginException, CouponSystemException, NoSuchObjectException;
+			throws CouponSystemException, CouponAlreadyPurchasedException, NoSuchObjectException;
 
 	Customer login(String custName, String Password) throws CouponSystemException, InvalidLoginException;
 

@@ -1,4 +1,4 @@
-package dbdao;
+package dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import dao.CustomerDAO;
 import ex.CouponSystemException;
 import ex.InvalidLoginException;
 import ex.NoSuchObjectException;
@@ -74,18 +73,18 @@ public class CustomerDBDAO implements CustomerDAO {
 	}// createCustomer
 
 	@Override
-	public void removeCustomer(Customer customer) throws CouponSystemException, NoSuchObjectException {
+	public void removeCustomer(long customerId) throws CouponSystemException, NoSuchObjectException {
 		Connection c1 = null;
 		PreparedStatement st = null;
 		try {
 			c1 = ConnectionPool.getInstance().getConnection();
 			st = c1.prepareStatement(Schema.getDeleteCustomer());
-			st.setLong(1, customer.getId());
+			st.setLong(1, customerId);
 			int rowAffected = st.executeUpdate();
 			if (rowAffected == 0) {
 				// if the "rowAffected" equals to 0 there is not such Customer , and we will
 				// throw a massage
-				String msg = "Unable to remove customer with id= " + customer.getId();
+				String msg = "Unable to remove customer with id= " + customerId;
 				throw new NoSuchObjectException(msg);
 			}
 		} catch (SQLException e) {
